@@ -1,0 +1,19 @@
+{
+  "name": "primus.sandbox",
+  "version": "0.0.0",
+  "description": "sandbox for primus learning",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "primus",
+    "example"
+  ],
+  "author": "Bjorn Hansen",
+  "license": "MIT",
+  "dependencies": {
+    "ws": "~1.0.1",
+    "primus": "~4.0.5"
+  }
+}
