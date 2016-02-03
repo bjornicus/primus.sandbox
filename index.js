@@ -22,6 +22,7 @@ primus.on('connection', function connection(spark) {
     console.log(spark.id, 'received message:', data);
     spark.write(data);
   });
+  primus.write('new connection: ' + spark.id)
 });
 
 server.listen(8080, function () {
