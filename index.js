@@ -1,18 +1,21 @@
 'use strict';
 
 //
-// Create the HTTP server and serve our index.html
+// Create the HTTP server and attach Primus
 //
-var server = require('http').createServer(function incoming(req, res) {
-  res.setHeader('Content-Type', 'text/html');
-  require('fs').createReadStream(__dirname + '/index.html').pipe(res);
-});
+var port = 8080,
+    express = require('express'),
+    Primus = require('primus'),
+    http = require('http'),
+    app = express(),
+    server = http.createServer(app),
+    primus = new Primus(server);
 
 //
-// Attach Primus to the HTTP server.
+// Serve static assets
 //
-var Primus = require('primus')
-  , primus = new Primus(server);
+app.use(express.static('public'));
+
 
 //
 // Listen for connections and echo the events send.
@@ -49,6 +52,5 @@ function sendToEveryoneElse(senderId, message){
     });
 } 
 
-server.listen(8080, function () {
-  console.log('Open http://localhost:8080 in your browser');
-});
+
+server.listen(port);
