@@ -19,8 +19,8 @@ var Primus = require('primus')
 //
 primus.on('connection', function connection(spark) {
   spark.on('data', function received(data) {
-    console.log(spark.id, 'received message:', data);
-    spark.write(data);
+    console.log(spark.id, 'received message for ' + data.recipient + ':' + data.message);
+    spark.write(data.message);
   });
   primus.write('new connection: ' + spark.id)
 });

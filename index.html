@@ -8,19 +8,21 @@
   <style>
     body { padding: 50px }
     #output { width: 450px; height: 200px; display: block; border: 0; outline: 0; margin: 0 0 4px }
-    #echo { width: 400px; height: 25px; font-size: 16px }
+    #messageBox { width: 400px; height: 25px; font-size: 16px }
     button { border-radius: 5px; border: 0; background: #444; color: #FFF; padding: 6px }
   </style>
 </head>
 <body>
   <form id="write">
     <textarea id="output" readonly></textarea>
-    <input placeholder="write message that should echo" id="echo" />
-    <button type="submit">echo</button>
+    <input placeholder="<recipient id>" id="recipientBox" />
+    <input placeholder="write message here" id="messageBox" />
+    <button type="submit">Send</button>
   </form>
   <script>
-    var output = document.getElementById('output')
-      , echo = document.getElementById('echo');
+    var output = document.getElementById('output'),
+        recipientBox = document.getElementById('recipientBox'),
+        messageBox = document.getElementById('messageBox');
 
     //
     // Tell primus to create a new connect to the current domain/port/protocol
@@ -43,8 +45,12 @@
       //
       // Write the typed message.
       //
-      primus.write(echo.value);
-      echo.value = '';
+      var data = {
+        recipient: recipientBox.value,
+        message: messageBox.value
+      }
+      primus.write(data);
+      messageBox.value = '';
     };
   </script>
 </body>
