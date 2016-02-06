@@ -13,6 +13,7 @@ var primus = new Primus();
 //
 primus.on('data', function received(data) {
   output.value += data +'\n';
+  output.scrollTop = output.scrollHeight;
 });
 
 //
