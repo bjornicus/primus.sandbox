@@ -22,7 +22,9 @@ app.use(express.static('public'));
 //
 
 primus.on('connection', function connection(spark) {
-    spark.on('data', onSparkDataRecieved);
+    spark.on('data', function (data) {
+        onSparkDataRecieved(spark, data);
+    });
     var connectedIds = [];
     primus.forEach(function(connectedSpark, id, connections) {
         if (id !== spark.id){connectedIds.push(id);}
@@ -31,8 +33,8 @@ primus.on('connection', function connection(spark) {
     sendToEveryoneElse(spark.id, 'new connection: ' + spark.id);
 });
 
-function onSparkDataRecieved(data) {
-    console.log(spark.id, 'received message for ' + data.recipient + ':' + data.message);
+function onSparkDataRecieved(spark, data) {
+    console.log('received message for ' + data.recipient + ':' + data.message);
     var message = '[from ' + spark.id + '] -->' + data.message;
     var recipient = data.recipient || "Everyone";
     var senderId = spark.id;
