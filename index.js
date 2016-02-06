@@ -14,43 +14,49 @@ var port = 3000,
 //
 // Serve static assets
 //
- app.use(express.static('public'));
+app.use(express.static('public'));
 
 
 //
 // Listen for connections and echo the events send.
 //
+
 primus.on('connection', function connection(spark) {
-  spark.on('data', function received(data) {
+    spark.on('data', onSparkDataRecieved);
+    var connectedIds = [];
+    primus.forEach(function(connectedSpark, id, connections) {
+        if (id !== spark.id){connectedIds.push(id);}
+    });
+    spark.write(connectedIds + ' are already connected.');
+    sendToEveryoneElse(spark.id, 'new connection: ' + spark.id);
+});
+
+function onSparkDataRecieved(data) {
     console.log(spark.id, 'received message for ' + data.recipient + ':' + data.message);
     var message = '[from ' + spark.id + '] -->' + data.message;
     var recipient = data.recipient || "Everyone";
     var senderId = spark.id;
-    if (data.recipient){
+    if (data.recipient) {
         var recipientSpark = primus.spark(data.recipient);
-        if (recipientSpark){
+        if (recipientSpark) {
             recipientSpark.write(message);
+        } else {
+            spark.write('[undeliverable]');
         }
-        else{
-            spark.write('[undeliverable]'  );
-        }
-    }
-    else {
+    } else {
         sendToEveryoneElse(senderId, message);
     }
 
     spark.write('[to ' + recipient + '] -->' + data.message);
-  });
+}
 
-  sendToEveryoneElse(spark.id, 'new connection: ' + spark.id);
-});
 
-function sendToEveryoneElse(senderId, message){
-    primus.forEach(function (spark, id, connections) {
-      if (spark.id == senderId) return;
-      spark.write(message);
+function sendToEveryoneElse(senderId, message) {
+    primus.forEach(function(spark, id, connections) {
+        if (spark.id == senderId) return;
+        spark.write(message);
     });
-} 
+}
 
 
 server.listen(port);
