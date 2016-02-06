@@ -15,5 +15,8 @@
   "dependencies": {
     "ws": "~1.0.1",
     "primus": "~4.0.5"
+  },
+  "devDependencies": {
+    "nodemon": "~1.8.1"
   }
 }
