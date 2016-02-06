@@ -3,7 +3,7 @@
 //
 // Create the HTTP server and attach Primus
 //
-var port = 8080,
+var port = 3000,
     express = require('express'),
     Primus = require('primus'),
     http = require('http'),
@@ -14,7 +14,7 @@ var port = 8080,
 //
 // Serve static assets
 //
-app.use(express.static('public'));
+ app.use(express.static('public'));
 
 
 //
