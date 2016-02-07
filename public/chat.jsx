@@ -2,18 +2,8 @@
 // recipientBox = document.getElementById('recipientBox'),
 // messageBox = document.getElementById('messageBox');
 
-// //
-// // Tell primus to create a new connect to the current domain/port/protocol
-// //
-// var primus = new Primus();
 
-// //
-// // Listen for incoming data and log it in our textarea.
-// //
-// primus.on('data', function received(data) {
-//     output.value += data + '\n';
-//     output.scrollTop = output.scrollHeight;
-// });
+
 
 // //
 // // Listen for submits of the form so we can send the message to the server.
@@ -48,9 +38,6 @@ var Comment = React.createClass({
 });
 
 var CommentBox = React.createClass({
-  loadCommentsFromServer: function() {
-        //this.setState({data: data});
-    },
     handleCommentSubmit: function(comment) {
         // stuff
     },
@@ -58,7 +45,15 @@ var CommentBox = React.createClass({
         return {data: []};
     },
     componentDidMount: function() {
-        //this.loadCommentsFromServer();
+        //
+        // Listen for incoming data and log it in our textarea.
+        //
+        var component = this;
+        this.props.connection.on('data', function received(data) {
+            component.setState({data: [{author: '?', message: data}]});
+            output.value += data + '\n';
+            output.scrollTop = output.scrollHeight;
+        });
     },
     render: function() {
         return (
@@ -75,8 +70,8 @@ var CommentList = React.createClass({
   render: function() {
     var commentNodes = this.props.data.map(function(comment) {
       return (
-        <Comment author={comment.author} key={comment.id}>
-        {comment.text}
+        <Comment author={comment.author}>
+        {comment.message}
         </Comment>
         );
   });
@@ -120,8 +115,13 @@ render: function() {
 }
 });
 
+//
+// Tell primus to create a new connect to the current domain/port/protocol
+//
+var primus = new Primus();
+
 ReactDOM.render(
-  <CommentBox url="/api/comments" pollInterval={2000} />,
+  <CommentBox connection={primus} />,
   document.getElementById('content')
   );
 
