@@ -110,19 +110,12 @@ handleSubmit: function(e) {
 },
 render: function() {
     return (
-      <form className="commentForm" onSubmit={this.handleSubmit}>
-      <input
-      type="text"
-      placeholder="Your name"
-      value={this.state.author}
-      onChange={this.handleAuthorChange}/>
-      <input
-      type="text"
-      placeholder="Say something..."
-      value={this.state.text}
-      onChange={this.handleTextChange}/>
-      <input type="submit" value="Post" />
-      </form>
+        <form id="write" onSubmit={this.handleSubmit}>
+            <textarea id="output" readonly></textarea>
+            <input placeholder="<recipient id>" id="recipientBox" value={this.state.author} onChange={this.handleAuthorChange}/>
+            <input placeholder="write message here" id="messageBox" value={this.state.text} onChange={this.handleTextChange}/>
+            <button type="submit">Send</button>
+        </form>  
       );
 }
 });
