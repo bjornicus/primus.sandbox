@@ -36,16 +36,11 @@
 //
 // react stuff
 //
+var mockData = [
+{"author": "Pete Hunt", "text": "This is one comment"},
+{"author": "Jordan Walke", "text": "This is *another* comment"}
+]
 
-var data = [{
-    id: 1,
-    author: "Pete Hunt",
-    text: "This is one comment"
-}, {
-    id: 2,
-    author: "Jordan Walke",
-    text: "This is *another* comment"
-}];
 var Comment = React.createClass({
     render: function() {
         return ( 
@@ -69,7 +64,7 @@ var CommentList = React.createClass({
         });
         return ( 
             <div className="commentList"> {commentNodes} </div>
-        );
+            );
     }
 });
 var CommentForm = React.createClass({
@@ -81,15 +76,21 @@ var CommentForm = React.createClass({
             );
     }
 });
-var CommentBox = React.createClass({
+var CommentBox = React.createClass({  
+    getInitialState: function() {
+        return {data: []};
+    },  
+    componentDidMount: function() {
+        this.setState({data: mockData});
+    },
     render: function() {
         return ( 
             <div className="commentBox">
             <h1> Comments </h1> 
-            <CommentList data={this.props.data}/> 
+            <CommentList data={this.state.data} />
             <CommentForm/>
             </div>
             );
     }
 });
-ReactDOM.render( <CommentBox data={data}/>, document.getElementById('content') );
+ReactDOM.render( <CommentBox/>, document.getElementById('content') );
