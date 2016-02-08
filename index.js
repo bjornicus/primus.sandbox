@@ -41,7 +41,7 @@ function onSparkDataRecieved(spark, data) {
     if (data.recipient) {
         var recipientSpark = primus.spark(data.recipient);
         if (recipientSpark) {
-            recipientSpark.write(message);
+            recipientSpark.write({sender: senderId, message: message});
         } else {
             spark.write({sender: '[server]', message: 'message to '+ recipient +'undeliverable.'} );
         }
