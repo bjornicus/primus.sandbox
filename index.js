@@ -43,14 +43,14 @@ function onSparkDataRecieved(spark, data) {
         if (recipientSpark) {
             recipientSpark.write(message);
         } else {
-            spark.write('[undeliverable]');
+            spark.write({sender: '[server]', message: 'message to '+ recipient +'undeliverable.'} );
         }
     } else {
         console.log ('sending to everyone');
         sendToEveryoneElse(senderId, message);
     }
 
-    spark.write('[to ' + recipient + '] -->' + data.message);
+    spark.write({sender: '[to ' + recipient + '] ', message: data.message});
 }
 
 
