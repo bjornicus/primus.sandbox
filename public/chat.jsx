@@ -20,7 +20,8 @@ var ChatBox = React.createClass({
     componentDidMount: function() {
         var component = this;
         this.props.connection.on('data', function received(data) {
-            component.setState({data: [{sender: data.sender, message: data.message}]});
+            var newData = component.state.data.concat([data])
+            component.setState({data: newData});
             // output.value += data + '\n';
             // output.scrollTop = output.scrollHeight;
         });
@@ -75,10 +76,9 @@ handleSubmit: function(e) {
 },
 render: function() {
     return (
-        <form id="write" onSubmit={this.handleSubmit}>
-        <textarea className="output" readonly></textarea>
+        <form onSubmit={this.handleSubmit}>
         <input placeholder="<recipient id>" className="recipientBox" value={this.state.sender} onChange={this.handleRecipientChange}/>
-        <input placeholder="write message here" className="messageBox" value={this.state.text} onChange={this.handleMessageChange}/>
+        <input placeholder="write message here" className="messageBox" value={this.state.message} onChange={this.handleMessageChange}/>
         <button type="submit">Send</button>
         </form>  
         );
@@ -94,7 +94,7 @@ var MultiChat = React.createClass({
         <ChatBox connection={primus} />
         <ChatBox connection={primus2} />
         </div>
-      );
+        );
 }
 });
 
