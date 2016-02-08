@@ -5,8 +5,8 @@
         display: inline-block;
         width: 40%;
     }
-    
-    #output {
+
+    .output {
         width: 450px;
         height: 200px;
         display: block;
@@ -15,7 +15,7 @@
         margin: 0 0 4px
     }
     
-    #messageBox {
+    .messageBox {
         width: 400px;
         height: 25px;
         font-size: 16px
@@ -27,4 +27,8 @@
         background: #444;
         color: #FFF;
         padding: 6px
+    }
+
+    .messageSender {
+        color: blue;
     }

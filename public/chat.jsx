@@ -1,25 +1,10 @@
-// var output = document.getElementById('output'),
-// recipientBox = document.getElementById('recipientBox'),
-// messageBox = document.getElementById('messageBox');
-
-
-
-
-// //
-// // Listen for submits of the form so we can send the message to the server.
-// //
-// document.getElementById('write').onsubmit = function submit(e) {
-
-// };
-
-
 
 var Message = React.createClass({
   render: function() {
     return (
       <div className="message">
-      <span class="messageSender">{this.props.sender}</span>
-      <span class="messageBody">{this.props.children}</span>
+      <span className="messageSender">{this.props.sender}: </span>
+      <span className="messageBody">{this.props.children}</span>
       </div>
       );
 }
@@ -33,14 +18,11 @@ var ChatBox = React.createClass({
         return {data: []};
     },
     componentDidMount: function() {
-        //
-        // Listen for incoming data and log it in our textarea.
-        //
         var component = this;
         this.props.connection.on('data', function received(data) {
-            component.setState({data: [{sender: '?', message: data}]});
-            output.value += data + '\n';
-            output.scrollTop = output.scrollHeight;
+            component.setState({data: [{sender: data.sender, message: data.message}]});
+            // output.value += data + '\n';
+            // output.scrollTop = output.scrollHeight;
         });
     },
     render: function() {
@@ -94,9 +76,9 @@ handleSubmit: function(e) {
 render: function() {
     return (
         <form id="write" onSubmit={this.handleSubmit}>
-        <textarea id="output" readonly></textarea>
-        <input placeholder="<recipient id>" id="recipientBox" value={this.state.sender} onChange={this.handleRecipientChange}/>
-        <input placeholder="write message here" id="messageBox" value={this.state.text} onChange={this.handleMessageChange}/>
+        <textarea className="output" readonly></textarea>
+        <input placeholder="<recipient id>" className="recipientBox" value={this.state.sender} onChange={this.handleRecipientChange}/>
+        <input placeholder="write message here" className="messageBox" value={this.state.text} onChange={this.handleMessageChange}/>
         <button type="submit">Send</button>
         </form>  
         );

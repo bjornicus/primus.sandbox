@@ -34,10 +34,10 @@ primus.on('connection', function connection(spark) {
 });
 
 function onSparkDataRecieved(spark, data) {
-    console.log('received message for ' + data.recipient + ':' + data.message);
-    var message = '[from ' + spark.id + '] -->' + data.message;
+    var message = data.message;
     var recipient = data.recipient || "Everyone";
     var senderId = spark.id;
+    console.log('received message from' + spark.id + 'for "' + recipient + '" :' + data.message);
     if (data.recipient) {
         var recipientSpark = primus.spark(data.recipient);
         if (recipientSpark) {
@@ -46,6 +46,7 @@ function onSparkDataRecieved(spark, data) {
             spark.write('[undeliverable]');
         }
     } else {
+        console.log ('sending to everyone');
         sendToEveryoneElse(senderId, message);
     }
 
@@ -56,7 +57,9 @@ function onSparkDataRecieved(spark, data) {
 function sendToEveryoneElse(senderId, message) {
     primus.forEach(function(spark, id, connections) {
         if (spark.id == senderId) return;
-        spark.write(message);
+        var data = {sender: senderId, message: message};
+        console.log(data);
+        spark.write(data);
     });
 }
 
