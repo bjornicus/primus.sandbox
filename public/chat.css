@@ -1,6 +1,10 @@
     body {
         padding: 50px
     }
+    .chatBox {
+        display: inline-block;
+        width: 40%;
+    }
     
     #output {
         width: 450px;

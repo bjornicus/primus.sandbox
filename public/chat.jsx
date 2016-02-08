@@ -9,37 +9,25 @@
 // // Listen for submits of the form so we can send the message to the server.
 // //
 // document.getElementById('write').onsubmit = function submit(e) {
-//     if (e && e.preventDefault) e.preventDefault();
 
-//     //
-//     // Write the typed message.
-//     //
-//     var data = {
-//         recipient: recipientBox.value,
-//         message: messageBox.value
-//     }
-//     primus.write(data);
-//     messageBox.value = '';
 // };
 
 
 
-var Comment = React.createClass({
+var Message = React.createClass({
   render: function() {
     return (
-      <div className="comment">
-      <h2 className="commentAuthor">
-      {this.props.author}
-      </h2>
-      <span>{this.props.children}</span>
+      <div className="message">
+      <span class="messageSender">{this.props.sender}</span>
+      <span class="messageBody">{this.props.children}</span>
       </div>
       );
 }
 });
 
-var CommentBox = React.createClass({
-    handleCommentSubmit: function(comment) {
-        // stuff
+var ChatBox = React.createClass({
+    handleMessageSubmit: function(data) {
+        this.props.connection.write(data);
     },
     getInitialState: function() {
         return {data: []};
@@ -50,78 +38,87 @@ var CommentBox = React.createClass({
         //
         var component = this;
         this.props.connection.on('data', function received(data) {
-            component.setState({data: [{author: '?', message: data}]});
+            component.setState({data: [{sender: '?', message: data}]});
             output.value += data + '\n';
             output.scrollTop = output.scrollHeight;
         });
     },
     render: function() {
         return (
-          <div className="commentBox">
-          <h1>Comments</h1>
-          <CommentList data={this.state.data} />
-          <CommentForm onCommentSubmit={this.handleCommentSubmit} />
+          <div className="chatBox">
+          <h1>Messages</h1>
+          <MessageList data={this.state.data} />
+          <MessageForm onMessageSubmit={this.handleMessageSubmit} />
           </div>
           );
     }
 });
 
-var CommentList = React.createClass({
+var MessageList = React.createClass({
   render: function() {
-    var commentNodes = this.props.data.map(function(comment) {
+    var messageNodes = this.props.data.map(function(message) {
       return (
-        <Comment author={comment.author}>
-        {comment.message}
-        </Comment>
+        <Message sender={message.sender}>
+        {message.message}
+        </Message>
         );
   });
     return (
-      <div className="commentList">
-      {commentNodes}
+      <div className="messageList">
+      {messageNodes}
       </div>
       );
 }
 });
 
-var CommentForm = React.createClass({
+var MessageForm = React.createClass({
   getInitialState: function() {
-    return {author: '', text: ''};
+    return {recipient: '', message: ''};
 },
-handleAuthorChange: function(e) {
-    this.setState({author: e.target.value});
+handleRecipientChange: function(e) {
+    this.setState({recipient: e.target.value});
 },
-handleTextChange: function(e) {
-    this.setState({text: e.target.value});
+handleMessageChange: function(e) {
+    this.setState({message: e.target.value});
 },
 handleSubmit: function(e) {
     e.preventDefault();
-    var author = this.state.author.trim();
-    var text = this.state.text.trim();
-    if (!text || !author) {
+    var recipient = this.state.recipient.trim();
+    var message = this.state.message.trim();
+    if (!message) {
       return;
   }
-  this.props.onCommentSubmit({author: author, text: text});
-  this.setState({author: '', text: ''});
+  this.props.onMessageSubmit({recipient: recipient, message: message});
+  this.setState({recipient: '', message: ''});
 },
 render: function() {
     return (
         <form id="write" onSubmit={this.handleSubmit}>
-            <textarea id="output" readonly></textarea>
-            <input placeholder="<recipient id>" id="recipientBox" value={this.state.author} onChange={this.handleAuthorChange}/>
-            <input placeholder="write message here" id="messageBox" value={this.state.text} onChange={this.handleTextChange}/>
-            <button type="submit">Send</button>
+        <textarea id="output" readonly></textarea>
+        <input placeholder="<recipient id>" id="recipientBox" value={this.state.sender} onChange={this.handleRecipientChange}/>
+        <input placeholder="write message here" id="messageBox" value={this.state.text} onChange={this.handleMessageChange}/>
+        <button type="submit">Send</button>
         </form>  
+        );
+}
+});
+
+var MultiChat = React.createClass({
+  render: function() {
+    var primus = new Primus();
+    var primus2 = new Primus();
+    return (
+        <div>
+        <ChatBox connection={primus} />
+        <ChatBox connection={primus2} />
+        </div>
       );
 }
 });
 
-//
-// Tell primus to create a new connect to the current domain/port/protocol
-//
-var primus = new Primus();
-
 ReactDOM.render(
-  <CommentBox connection={primus} />,
+  <MultiChat />,
   document.getElementById('content')
   );
+
 
